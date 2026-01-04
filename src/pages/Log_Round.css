@@ -65,6 +65,51 @@
   box-shadow: 0 0 0 3px rgba(108, 132, 76, 0.1);
 }
 
+/* Number input with increment/decrement buttons */
+.number-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.number-input-group input {
+  flex: 1;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 1rem;
+}
+
+.increment-btn,
+.decrement-btn {
+  width: 50px;
+  height: 50px;
+  border: 2px solid var(--muted-green);
+  background: var(--muted-green);
+  color: var(--primary-cream);
+  border-radius: 6px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.increment-btn:hover,
+.decrement-btn:hover {
+  background: var(--secondary-blue);
+  border-color: var(--secondary-blue);
+  transform: scale(1.05);
+}
+
+.increment-btn:active,
+.decrement-btn:active {
+  transform: scale(0.95);
+}
+
 /* Holes selector */
 .holes-selector {
   display: flex;
@@ -342,4 +387,124 @@
   margin: 1rem 1.25rem;
   text-align: center;
   border: 1px solid var(--sage-gray);
+}
+
+/* Fireworks celebration for hole-in-one */
+.fireworks-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.hole-in-one-text {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--primary-cream);
+  text-align: center;
+  animation: celebrationPulse 1s ease-in-out infinite;
+  text-shadow: 0 0 20px rgba(249, 230, 191, 0.8);
+  z-index: 10001;
+}
+
+.firework {
+  position: absolute;
+  bottom: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  animation: fireworkLaunch 1.5s ease-out infinite;
+}
+
+.firework::before,
+.firework::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.firework::before {
+  background: var(--muted-green);
+  animation: explode1 1.5s ease-out infinite;
+}
+
+.firework::after {
+  background: #FFD700;
+  animation: explode2 1.5s ease-out infinite;
+}
+
+.firework:nth-child(2)::before { background: var(--secondary-blue); }
+.firework:nth-child(2)::after { background: #FF6B6B; }
+.firework:nth-child(3)::before { background: var(--sage-gray); }
+.firework:nth-child(3)::after { background: #4ECDC4; }
+.firework:nth-child(4)::before { background: var(--primary-dark); }
+.firework:nth-child(4)::after { background: #FFE66D; }
+.firework:nth-child(5)::before { background: var(--muted-green); }
+.firework:nth-child(5)::after { background: #FF8C42; }
+
+@keyframes celebrationPulse {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.1);
+  }
+}
+
+@keyframes fireworkLaunch {
+  0% {
+    bottom: 0;
+    opacity: 1;
+  }
+  50% {
+    bottom: 60%;
+    opacity: 1;
+  }
+  100% {
+    bottom: 60%;
+    opacity: 0;
+  }
+}
+
+@keyframes explode1 {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-80px, -80px) scale(3);
+    opacity: 0;
+  }
+}
+
+@keyframes explode2 {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(80px, -60px) scale(3);
+    opacity: 0;
+  }
 }

@@ -32,6 +32,7 @@ function Log_Round() {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [showFireworks, setShowFireworks] = useState(false);
 
   // Start tracking holes
   const handleStartRound = (e: React.FormEvent) => {
@@ -45,6 +46,12 @@ function Log_Round() {
 
   // Save current hole and move to next
   const handleNextHole = () => {
+    // Check for hole-in-one (Par 3 + Score of 1)
+    if (currentHoleData.fir === null && currentHoleData.score === 1) {
+      setShowFireworks(true);
+      setTimeout(() => setShowFireworks(false), 4000);
+    }
+    
     const updatedHoles = [...holesData, currentHoleData];
     setHolesData(updatedHoles);
     
@@ -171,6 +178,16 @@ function Log_Round() {
   if (step === 'holes') {
     return (
       <div className="log-round-container">
+        {showFireworks && (
+          <div className="fireworks-overlay">
+            <div className="hole-in-one-text">HOLE IN ONE! 🏌️‍♂️</div>
+            <div className="firework" style={{ left: '20%', animationDelay: '0s' }}></div>
+            <div className="firework" style={{ left: '50%', animationDelay: '0.3s' }}></div>
+            <div className="firework" style={{ left: '80%', animationDelay: '0.6s' }}></div>
+            <div className="firework" style={{ left: '35%', animationDelay: '0.9s' }}></div>
+            <div className="firework" style={{ left: '65%', animationDelay: '1.2s' }}></div>
+          </div>
+        )}
         <button className="back-btn" onClick={() => navigate(-1)}>Back</button>
         <h1>{courseName}</h1>
         <h2>Hole {currentHole} of {totalHoles}</h2>
@@ -232,26 +249,60 @@ function Log_Round() {
 
           <div className="form-group">
             <label htmlFor="putts">Number of Putts:</label>
-            <input
-              type="number"
-              id="putts"
-              value={currentHoleData.putts}
-              onChange={(e) => setCurrentHoleData({ ...currentHoleData, putts: parseInt(e.target.value) || 0 })}
-              min="0"
-              max="10"
-            />
+            <div className="number-input-group">
+              <button
+                type="button"
+                className="decrement-btn"
+                onClick={() => setCurrentHoleData({ ...currentHoleData, putts: Math.max(0, currentHoleData.putts - 1) })}
+              >
+                −
+              </button>
+              <input
+                type="number"
+                id="putts"
+                value={currentHoleData.putts}
+                onChange={(e) => setCurrentHoleData({ ...currentHoleData, putts: parseInt(e.target.value) || 0 })}
+                min="0"
+                max="10"
+                readOnly
+              />
+              <button
+                type="button"
+                className="increment-btn"
+                onClick={() => setCurrentHoleData({ ...currentHoleData, putts: Math.min(10, currentHoleData.putts + 1) })}
+              >
+                +
+              </button>
+            </div>
           </div>
 
           <div className="form-group">
             <label htmlFor="score">Score:</label>
-            <input
-              type="number"
-              id="score"
-              value={currentHoleData.score}
-              onChange={(e) => setCurrentHoleData({ ...currentHoleData, score: parseInt(e.target.value) || 0 })}
-              min="1"
-              max="15"
-            />
+            <div className="number-input-group">
+              <button
+                type="button"
+                className="decrement-btn"
+                onClick={() => setCurrentHoleData({ ...currentHoleData, score: Math.max(1, currentHoleData.score - 1) })}
+              >
+                −
+              </button>
+              <input
+                type="number"
+                id="score"
+                value={currentHoleData.score}
+                onChange={(e) => setCurrentHoleData({ ...currentHoleData, score: parseInt(e.target.value) || 1 })}
+                min="1"
+                max="15"
+                readOnly
+              />
+              <button
+                type="button"
+                className="increment-btn"
+                onClick={() => setCurrentHoleData({ ...currentHoleData, score: Math.min(15, currentHoleData.score + 1) })}
+              >
+                +
+              </button>
+            </div>
           </div>
 
           <div className="navigation-buttons">
