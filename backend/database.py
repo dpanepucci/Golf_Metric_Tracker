@@ -2,11 +2,15 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./golf_tracker.db")
+# Use absolute path for database to ensure consistency
+BASE_DIR = Path(__file__).resolve().parent
+DEFAULT_DB_PATH = f"sqlite:///{BASE_DIR}/golf_tracker.db"
+DATABASE_URL = os.getenv("DATABASE_URL", DEFAULT_DB_PATH)
 
 # Create SQLite engine
 engine = create_engine(
