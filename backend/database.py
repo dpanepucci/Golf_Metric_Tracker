@@ -10,6 +10,10 @@ BASE_DIR = Path(__file__).resolve().parent
 DEFAULT_DB_PATH = f"sqlite:///{BASE_DIR}/golf_tracker.db"
 DATABASE_URL = os.getenv("DATABASE_URL", DEFAULT_DB_PATH)
 
+# Fix Render's postgres:// URL to postgresql:// for SQLAlchemy 2.0+
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 # Create SQLite engine
 # For SQLite, we need check_same_thread=False
 # For PostgreSQL, we don't need this parameter
