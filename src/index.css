@@ -1,0 +1,32 @@
+:root {
+  --primary-dark: #5f5933;
+  --primary-cream: #f9e6bf;
+  --secondary-blue: #3c505c;
+  --sage-gray: #9caca7;
+  --muted-green: #6c844c;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  background-color: var(--primary-cream);
+  color: var(--primary-dark);
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+input {
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
