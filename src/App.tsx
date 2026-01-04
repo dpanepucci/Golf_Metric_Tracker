@@ -30,7 +30,12 @@ function Home() {
         const data = await golfService.getYTDStats();
         setStats(data);
       } catch (err) {
-        setError('Failed to load stats');
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load stats';
+        if (errorMessage.includes('Session expired')) {
+          navigate('/login');
+        } else {
+          setError(errorMessage);
+        }
         console.error(err);
       } finally {
         setIsLoading(false);
@@ -38,7 +43,7 @@ function Home() {
     };
 
     fetchStats();
-  }, []);
+  }, [navigate]);
 
   const handleLogout = () => {
     golfService.logout();

@@ -131,6 +131,10 @@ export const golfService = {
     const response = await fetch(`${API_URL}/stats/ytd`, {
       headers: getAuthHeader(),
     });
+    if (response.status === 401) {
+      localStorage.removeItem('access_token');
+      throw new Error('Session expired. Please login again.');
+    }
     if (!response.ok) throw new Error('Failed to fetch stats');
     return response.json();
   },
