@@ -7,7 +7,7 @@ from typing import List
 from database import get_db
 from models import User, GolfRound
 from schemas import (
-    UserCreate, UserResponse, UserLogin, Token,
+    UserCreate, UserResponse, Token,
     GolfRoundCreate, GolfRoundResponse, YearToDateStats
 )
 from auth import (
@@ -38,12 +38,19 @@ async def get_current_user(
 
 
 # Auth Routes
-@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/register",
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED
+)
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
     """Register a new user"""
     # Check if username exists
     if db.query(User).filter(User.username == user.username).first():
-        raise HTTPException(status_code=400, detail="Username already registered")
+        raise HTTPException(
+            status_code=400,
+            detail="Username already registered"
+        )
     
     # Create new user
     hashed_password = get_password_hash(user.password)
@@ -58,10 +65,15 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.post("/token", response_model=Token)
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
     """Login and get access token"""
     user = db.query(User).filter(User.username == form_data.username).first()
-    if not user or not verify_password(form_data.password, user.hashed_password):
+    if not user or not verify_password(
+        form_data.password, str(user.hashed_password)
+    ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
@@ -82,7 +94,11 @@ def read_users_me(current_user: User = Depends(get_current_user)):
 
 
 # Golf Round Routes
-@router.post("/rounds", response_model=GolfRoundResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/rounds",
+    response_model=GolfRoundResponse,
+    status_code=status.HTTP_201_CREATED
+)
 def create_golf_round(
     round_data: GolfRoundCreate,
     current_user: User = Depends(get_current_user),
@@ -158,6 +174,7 @@ def get_year_to_date_stats(
     """Get year-to-date statistics for current user"""
     from datetime import datetime
     from sqlalchemy import func
+    from typing import cast
     
     current_year = datetime.now().year
     rounds = db.query(GolfRound).filter(
@@ -173,19 +190,36 @@ def get_year_to_date_stats(
             total_rounds=0
         )
     
-    total_fairways_hit = sum(r.fairways_hit for r in rounds)
-    total_fairways = sum(r.total_fairways for r in rounds)
-    total_gir = sum(r.greens_in_regulation for r in rounds)
-    total_greens = sum(r.total_greens for r in rounds)
-    total_putts = sum(r.total_putts for r in rounds)
+    # Type: ignore to handle SQLAlchemy type confusion with Pylance
+    total_fairways_hit = sum(
+        cast(int, r.fairways_hit) for r in rounds
+    )
+    total_fairways = sum(
+        cast(int, r.total_fairways) for r in rounds
+    )
+    total_gir = sum(
+        cast(int, r.greens_in_regulation) for r in rounds
+    )
+    total_greens = sum(
+        cast(int, r.total_greens) for r in rounds
+    )
+    total_putts = sum(
+        cast(int, r.total_putts) for r in rounds
+    )
     
-    fir_pct = (total_fairways_hit / total_fairways * 100) if total_fairways > 0 else 0
-    gir_pct = (total_gir / total_greens * 100) if total_greens > 0 else 0
-    avg_putts = total_putts / len(rounds) if rounds else 0
+    fir_pct = float(
+        (total_fairways_hit / total_fairways * 100)
+        if total_fairways > 0 else 0
+    )
+    gir_pct = float(
+        (total_gir / total_greens * 100)
+        if total_greens > 0 else 0
+    )
+    avg_putts = float(total_putts / len(rounds) if rounds else 0)
     
     return YearToDateStats(
-        fir_percentage=round(float(fir_pct), 2),
-        gir_percentage=round(float(gir_pct), 2),
-        average_putts=round(float(avg_putts), 2),
+        fir_percentage=round(fir_pct, 2),
+        gir_percentage=round(gir_pct, 2),
+        average_putts=round(avg_putts, 2),
         total_rounds=len(rounds)
     )
