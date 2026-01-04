@@ -129,6 +129,7 @@ def get_golf_round(
         raise HTTPException(status_code=404, detail="Round not found")
     return round_data
 
+
 @router.delete("/rounds/{round_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_golf_round(
     round_id: int,
@@ -183,8 +184,8 @@ def get_year_to_date_stats(
     avg_putts = total_putts / len(rounds) if rounds else 0
     
     return YearToDateStats(
-        fir_percentage=round(fir_pct, 2),
-        gir_percentage=round(gir_pct, 2),
-        average_putts=round(avg_putts, 2),
+        fir_percentage=round(float(fir_pct), 2),
+        gir_percentage=round(float(gir_pct), 2),
+        average_putts=round(float(avg_putts), 2),
         total_rounds=len(rounds)
     )

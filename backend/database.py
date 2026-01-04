@@ -3,9 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 from pathlib import Path
-from dotenv import load_dotenv
 
-load_dotenv()
 
 # Use absolute path for database to ensure consistency
 BASE_DIR = Path(__file__).resolve().parent
@@ -13,10 +11,16 @@ DEFAULT_DB_PATH = f"sqlite:///{BASE_DIR}/golf_tracker.db"
 DATABASE_URL = os.getenv("DATABASE_URL", DEFAULT_DB_PATH)
 
 # Create SQLite engine
-engine = create_engine(
-    DATABASE_URL,
-    connect_args={"check_same_thread": False}  # Needed for SQLite
-)
+# For SQLite, we need check_same_thread=False
+# For PostgreSQL, we don't need this parameter
+if DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(
+        DATABASE_URL,
+        connect_args={"check_same_thread": False}
+    )
+else:
+    # PostgreSQL or other databases
+    engine = create_engine(DATABASE_URL)
 
 # Create SessionLocal class
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
