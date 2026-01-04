@@ -173,13 +173,13 @@ def get_year_to_date_stats(
 ):
     """Get year-to-date statistics for current user"""
     from datetime import datetime
-    from sqlalchemy import func
+    from sqlalchemy import func, extract
     from typing import cast
     
     current_year = datetime.now().year
     rounds = db.query(GolfRound).filter(
         GolfRound.user_id == current_user.id,
-        func.strftime('%Y', GolfRound.date) == str(current_year)
+        extract('year', GolfRound.date) == current_year
     ).all()
     
     if not rounds:
