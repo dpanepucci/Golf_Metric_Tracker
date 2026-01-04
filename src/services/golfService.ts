@@ -54,6 +54,9 @@ export const golfService = {
 
   // Login
   async login(username: string, password: string) {
+    // Clear any existing expired token before attempting login
+    localStorage.removeItem('access_token');
+    
     const formData = new URLSearchParams();
     formData.append('username', username);
     formData.append('password', password);
@@ -63,7 +66,10 @@ export const golfService = {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: formData,
     });
-    if (!response.ok) throw new Error('Login failed');
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || 'Incorrect username or password');
+    }
     const data = await response.json();
     localStorage.setItem('access_token', data.access_token);
     return data;
@@ -89,6 +95,10 @@ export const golfService = {
       },
       body: JSON.stringify(roundData),
     });
+    if (response.status === 401) {
+      localStorage.removeItem('access_token');
+      throw new Error('Session expired. Please login again.');
+    }
     if (!response.ok) throw new Error('Failed to create round');
     return response.json();
   },
@@ -98,6 +108,11 @@ export const golfService = {
     const response = await fetch(`${API_URL}/rounds`, {
       headers: getAuthHeader(),
     });
+    if (response.status === 401) {
+      // Token expired, redirect to login
+      localStorage.removeItem('access_token');
+      throw new Error('Session expired. Please login again.');
+    }
     if (!response.ok) throw new Error('Failed to fetch rounds');
     return response.json();
   },
