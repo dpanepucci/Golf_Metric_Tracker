@@ -6,19 +6,19 @@ from database import Base
 
 class User(Base):
     __tablename__ = "users"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
-    
+
     # Relationship to golf rounds
     golf_rounds = relationship("GolfRound", back_populates="user")
 
 
 class GolfRound(Base):
     __tablename__ = "golf_rounds"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     date = Column(DateTime, default=datetime.utcnow)
@@ -29,6 +29,6 @@ class GolfRound(Base):
     greens_in_regulation = Column(Integer, default=0)
     total_greens = Column(Integer, default=18)
     total_putts = Column(Integer, default=0)
-    
+
     # Relationship to user
     user = relationship("User", back_populates="golf_rounds")
