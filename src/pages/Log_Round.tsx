@@ -82,7 +82,8 @@ function Log_Round() {
 
   // Calculate totals
   const calculateTotals = () => {
-    const allHoles = [...holesData, currentHoleData];
+    // In review step, all holes are already in holesData. During holes step, include currentHoleData.
+    const allHoles = step === 'review' ? holesData : [...holesData, currentHoleData];
     const totalScore = allHoles.reduce((sum, hole) => sum + hole.score, 0);
     const fairwaysHit = allHoles.filter(hole => hole.fir === true).length;
     const totalFairways = allHoles.filter(hole => hole.fir !== null).length; // Exclude par 3s
@@ -119,7 +120,13 @@ function Log_Round() {
       alert('Round logged successfully!');
       navigate('/previous-round');
     } catch (err) {
-      setError('Failed to log round. Please try again.');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to log round. Please try again.';
+      if (errorMessage.includes('Session expired') || errorMessage.includes('login again')) {
+        alert('Your session has expired. Please login again.');
+        navigate('/login');
+      } else {
+        setError(errorMessage);
+      }
       console.error(err);
     } finally {
       setIsSubmitting(false);
@@ -364,8 +371,8 @@ function Log_Round() {
           <div className="holes-review">
             <h4>Hole by Hole:</h4>
             <div className="holes-grid">
-              {allHoles.map((hole) => (
-                <div key={hole.hole} className="hole-summary">
+              {allHoles.map((hole, index) => (
+                <div key={index} className="hole-summary">
                   <strong>Hole {hole.hole}</strong>
                   <span>Score: {hole.score}</span>
                   <span>Putts: {hole.putts}</span>

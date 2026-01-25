@@ -311,6 +311,24 @@
   letter-spacing: 0.02em;
 }
 
+/* Special Achievements Section */
+.section-divider.special-section {
+  margin-top: 2.5rem;
+  border-bottom: 2px solid var(--muted-green);
+}
+
+.section-divider.special-section h2 {
+  color: var(--muted-green);
+  font-size: 1.15rem;
+}
+
+.special-hint {
+  font-size: 0.85rem;
+  color: var(--sage-gray);
+  font-style: italic;
+  margin: 0.5rem 0 0 0;
+}
+
 .achievement-card {
   background: white;
   border: 2px solid var(--sage-gray);
@@ -331,6 +349,18 @@
 
 .achievement-card.locked {
   opacity: 0.7;
+}
+
+.achievement-card.special {
+  border: 2px solid var(--muted-green);
+  background: linear-gradient(135deg, rgba(108, 132, 76, 0.03) 0%, rgba(249, 230, 191, 0.05) 100%);
+}
+
+.achievement-card.special.unlocked {
+  background: linear-gradient(135deg, rgba(108, 132, 76, 0.1) 0%, rgba(249, 230, 191, 0.1) 100%);
+  border-color: var(--muted-green);
+  box-shadow: 0 4px 12px rgba(108, 132, 76, 0.2);
+  opacity: 1;
 }
 
 .achievement-header {
