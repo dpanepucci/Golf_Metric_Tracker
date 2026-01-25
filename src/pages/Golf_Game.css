@@ -96,6 +96,29 @@
   letter-spacing: 0.05em;
 }
 
+/* Achievement Counts Styles */
+.achievement-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background: var(--primary-cream);
+  border-radius: 6px;
+}
+
+.achievement-count-item {
+  flex: 1 1 auto;
+  min-width: fit-content;
+}
+
+.count-text {
+  font-size: 0.85rem;
+  color: var(--primary-dark);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .level-details {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

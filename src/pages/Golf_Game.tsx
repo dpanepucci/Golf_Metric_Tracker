@@ -152,40 +152,45 @@ function Golf_Game() {
         return stats.total_rounds >= achievement.threshold;
       
       case achievement.id.startsWith("fir-"):
-        // Check if any round has FIR percentage >= threshold
+        // Check if any 18-hole round has FIR percentage >= threshold
         return rounds.some(round => {
+          if (round.total_greens !== 18) return false;
           const firPercentage = (round.fairways_hit / round.total_fairways) * 100;
           return firPercentage >= achievement.threshold;
         });
       
       case achievement.id.startsWith("gir-"):
-        // Check if any round has GIR percentage >= threshold
+        // Check if any 18-hole round has GIR percentage >= threshold
         return rounds.some(round => {
+          if (round.total_greens !== 18) return false;
           const girPercentage = (round.greens_in_regulation / round.total_greens) * 100;
           return girPercentage >= achievement.threshold;
         });
       
       case achievement.id.startsWith("putts-"):
-        // Check if any round has putts <= threshold
-        return rounds.some(round => round.total_putts <= achievement.threshold);
+        // Check if any 18-hole round has putts <= threshold
+        return rounds.some(round => round.total_greens === 18 && round.total_putts <= achievement.threshold);
       
       case achievement.id.startsWith("score-"):
-        // Find the best (lowest) score
-        if (rounds.length === 0) return false;
-        const bestScore = Math.min(...rounds.map(r => r.score));
+        // Find the best (lowest) score from 18-hole rounds only
+        const fullRounds = rounds.filter(r => r.total_greens === 18);
+        if (fullRounds.length === 0) return false;
+        const bestScore = Math.min(...fullRounds.map(r => r.score));
         return bestScore <= achievement.threshold;
       
       case achievement.id === "double-trouble":
-        // Check if any round has perfect fairways AND perfect greens
+        // Check if any 18-hole round has perfect fairways AND perfect greens
         return rounds.some(round => 
+          round.total_greens === 18 &&
           round.fairways_hit === round.total_fairways && 
           round.greens_in_regulation === round.total_greens
         );
       
       case achievement.id === "consistent-10":
-        // Check if user has 10+ rounds within 5 strokes of each other
-        if (rounds.length < 10) return false;
-        const sortedScores = [...rounds].map(r => r.score).sort((a, b) => a - b);
+        // Check if user has 10+ 18-hole rounds within 5 strokes of each other
+        const fullRoundsConsistent = rounds.filter(r => r.total_greens === 18);
+        if (fullRoundsConsistent.length < 10) return false;
+        const sortedScores = fullRoundsConsistent.map(r => r.score).sort((a, b) => a - b);
         // Check each window of 10 consecutive scores
         for (let i = 0; i <= sortedScores.length - 10; i++) {
           const window = sortedScores.slice(i, i + 10);
@@ -246,8 +251,9 @@ function Golf_Game() {
         };
       
       case achievement.id.startsWith("fir-"):
-        const bestFir = rounds.length > 0 
-          ? Math.max(...rounds.map(r => (r.fairways_hit / r.total_fairways) * 100))
+        const fullRoundsFir = rounds.filter(r => r.total_greens === 18);
+        const bestFir = fullRoundsFir.length > 0 
+          ? Math.max(...fullRoundsFir.map(r => (r.fairways_hit / r.total_fairways) * 100))
           : 0;
         return {
           current: bestFir,
@@ -256,8 +262,9 @@ function Golf_Game() {
         };
       
       case achievement.id.startsWith("gir-"):
-        const bestGir = rounds.length > 0
-          ? Math.max(...rounds.map(r => (r.greens_in_regulation / r.total_greens) * 100))
+        const fullRoundsGir = rounds.filter(r => r.total_greens === 18);
+        const bestGir = fullRoundsGir.length > 0
+          ? Math.max(...fullRoundsGir.map(r => (r.greens_in_regulation / r.total_greens) * 100))
           : 0;
         return {
           current: bestGir,
@@ -266,8 +273,9 @@ function Golf_Game() {
         };
       
       case achievement.id.startsWith("putts-"):
-        const bestPutts = rounds.length > 0
-          ? Math.min(...rounds.map(r => r.total_putts))
+        const fullRoundsPutts = rounds.filter(r => r.total_greens === 18);
+        const bestPutts = fullRoundsPutts.length > 0
+          ? Math.min(...fullRoundsPutts.map(r => r.total_putts))
           : 99;
         return {
           current: achievement.threshold - bestPutts,
@@ -276,7 +284,8 @@ function Golf_Game() {
         };
       
       case achievement.id.startsWith("score-"):
-        const bestScore = rounds.length > 0 ? Math.min(...rounds.map(r => r.score)) : 999;
+        const fullRoundsScore = rounds.filter(r => r.total_greens === 18);
+        const bestScore = fullRoundsScore.length > 0 ? Math.min(...fullRoundsScore.map(r => r.score)) : 999;
         return {
           current: achievement.threshold - bestScore,
           target: achievement.threshold,
@@ -285,6 +294,7 @@ function Golf_Game() {
       
       case achievement.id === "double-trouble":
         const perfectRounds = rounds.filter(round => 
+          round.total_greens === 18 &&
           round.fairways_hit === round.total_fairways && 
           round.greens_in_regulation === round.total_greens
         ).length;
@@ -295,14 +305,15 @@ function Golf_Game() {
         };
       
       case achievement.id === "consistent-10":
-        if (rounds.length < 10) {
+        const fullRoundsConsistentProgress = rounds.filter(r => r.total_greens === 18);
+        if (fullRoundsConsistentProgress.length < 10) {
           return {
-            current: rounds.length,
+            current: fullRoundsConsistentProgress.length,
             target: 10,
-            text: `${rounds.length}/10 rounds logged`
+            text: `${fullRoundsConsistentProgress.length}/10 full rounds logged`
           };
         }
-        const sortedScores = [...rounds].map(r => r.score).sort((a, b) => a - b);
+        const sortedScores = fullRoundsConsistentProgress.map(r => r.score).sort((a, b) => a - b);
         let minRange = Infinity;
         for (let i = 0; i <= sortedScores.length - 10; i++) {
           const window = sortedScores.slice(i, i + 10);
@@ -312,7 +323,7 @@ function Golf_Game() {
         return {
           current: Math.max(0, 5 - minRange),
           target: 5,
-          text: minRange === Infinity ? "Need 10 rounds" : `Best range: ${minRange} strokes`
+          text: minRange === Infinity ? "Need 10 full rounds" : `Best range: ${minRange} strokes`
         };
       
       case achievement.id === "marathon-man":
@@ -413,6 +424,34 @@ function Golf_Game() {
   
   const levelInfo = getLevelInfo(unlockedAchievements.length + unlockedSpecialAchievements.length);
 
+  // Calculate achievement counts by medal type
+  const getAchievementCounts = () => {
+    const bronzeTotal = regularAchievements.filter(a => a.medal === "Bronze").length;
+    const bronzeUnlocked = unlockedAchievements.filter(a => a.medal === "Bronze").length;
+    
+    const silverTotal = regularAchievements.filter(a => a.medal === "Silver").length;
+    const silverUnlocked = unlockedAchievements.filter(a => a.medal === "Silver").length;
+    
+    const goldTotal = regularAchievements.filter(a => a.medal === "Gold").length;
+    const goldUnlocked = unlockedAchievements.filter(a => a.medal === "Gold").length;
+    
+    const platinumTotal = regularAchievements.filter(a => a.medal === "Platinum").length;
+    const platinumUnlocked = unlockedAchievements.filter(a => a.medal === "Platinum").length;
+    
+    const specialTotal = specialAchievements.length;
+    const specialUnlocked = unlockedSpecialAchievements.length;
+    
+    return [
+      { type: "Bronze", unlocked: bronzeUnlocked, total: bronzeTotal },
+      { type: "Silver", unlocked: silverUnlocked, total: silverTotal },
+      { type: "Gold", unlocked: goldUnlocked, total: goldTotal },
+      { type: "Platinum", unlocked: platinumUnlocked, total: platinumTotal },
+      { type: "Special", unlocked: specialUnlocked, total: specialTotal }
+    ].filter(item => item.total > 0); // Only show categories that exist
+  };
+
+  const achievementCounts = getAchievementCounts();
+
   // Check if current theme is still unlocked, if not reset to original
   // Only run this check after data has loaded to avoid resetting during initial render
   useEffect(() => {
@@ -451,6 +490,15 @@ function Golf_Game() {
         <div className="level-header">
           <h3>Player Level</h3>
           <div className="level-badge">Level {levelInfo.level}</div>
+        </div>
+        
+        {/* Achievement Counts by Type */}
+        <div className="achievement-counts">
+          {achievementCounts.map(({ type, unlocked, total }) => (
+            <div key={type} className="achievement-count-item">
+              <span className="count-text">{unlocked}/{total} {type}</span>
+            </div>
+          ))}
         </div>
         
         <div className="level-details">
