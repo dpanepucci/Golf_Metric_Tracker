@@ -48,7 +48,7 @@ function Home() {
   }, [navigate]);
 
   return (
-    <>
+    <div style={{ paddingTop: '60px' }}>
       <div className="YTD">
         <h3>Year to Date:</h3>
         {isLoading ? (
@@ -80,7 +80,7 @@ function Home() {
         className="achievements_btn" onClick={() => navigate("/achievements")}>
         Achievements
       </button>
-    </>
+    </div>
   );
 }
 
@@ -89,8 +89,10 @@ function App() {
   const showHeader = location.pathname !== "/login";
 
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
+    <>
+      {showHeader && <Header />}
+      <Routes>
+        <Route path="/login" element={<Login />} />
       <Route 
         path="/" 
         element={
@@ -124,6 +126,7 @@ function App() {
         } 
       />
     </Routes>
+    </>
   );
 }
 

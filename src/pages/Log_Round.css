@@ -2,6 +2,7 @@
   max-width: 430px;
   margin: 0 auto;
   padding: 0;
+  padding-top: 60px;
   min-height: 100vh;
   background: var(--primary-cream);
 }

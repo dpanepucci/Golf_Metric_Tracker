@@ -9,6 +9,7 @@ function Previous_Round() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Fetch rounds when component loads
   useEffect(() => {
@@ -67,9 +68,21 @@ function Previous_Round() {
     return ((round.greens_in_regulation / round.total_greens) * 100).toFixed(1);
   };
 
+  // Filter rounds based on search query
+  const filteredRounds = rounds.filter((round) => {
+    if (!searchQuery.trim()) return true;
+    
+    const query = searchQuery.toLowerCase();
+    const courseName = round.course_name.toLowerCase();
+    const score = round.score.toString();
+    
+    return courseName.includes(query) || score.includes(query);
+  });
+
   if (isLoading) {
     return (
       <div className="previous-round-container">
+        <button className="back-btn" onClick={() => navigate('/')}>← Back</button>
         <h1>Previous Rounds</h1>
         <p>Loading rounds...</p>
         <button className="back-home-btn" onClick={() => navigate('/')}>Back to Home</button>
@@ -79,15 +92,39 @@ function Previous_Round() {
 
   return (
     <div className="previous-round-container">
+      <button className="back-btn" onClick={() => navigate('/')}>← Back</button>
       <h1>Previous Rounds</h1>
       
       {error && <div className="error-message">{error}</div>}
       
+      {rounds.length > 0 && (
+        <div className="search-container">
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Search by course name or score..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          {searchQuery && (
+            <button 
+              className="clear-search-btn"
+              onClick={() => setSearchQuery('')}
+              title="Clear search"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      )}
+      
       {rounds.length === 0 ? (
         <p className="no-rounds">No rounds logged yet. Go log your first round!</p>
+      ) : filteredRounds.length === 0 ? (
+        <p className="no-rounds">No rounds match your search. Try a different search term.</p>
       ) : (
         <div className="rounds-list">
-          {rounds.map((round) => (
+          {filteredRounds.map((round) => (
             <div key={round.id} className="round-card">
               <div className="round-header">
                 <h3>{round.course_name}</h3>

@@ -4,6 +4,7 @@
   margin: 0 auto;
   min-height: 100vh;
   background: var(--primary-cream);
+  padding-top: 60px;
   padding-bottom: 2rem;
   overflow-x: hidden;
 }
