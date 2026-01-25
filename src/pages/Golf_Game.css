@@ -43,7 +43,7 @@
 .achievements-summary {
   background: white;
   padding: 1rem 1.25rem;
-  margin: 0 1.25rem 1.5rem;
+  margin: 0 1.25rem 1rem;
   border: 2px solid var(--sage-gray);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(95, 89, 51, 0.08);
@@ -57,6 +57,221 @@
   font-size: 1rem;
 }
 
+/* Level Card Styles */
+.level-card {
+  background: white;
+  border: 2px solid var(--muted-green);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 0 1.25rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(95, 89, 51, 0.08);
+}
+
+.level-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--sage-gray);
+}
+
+.level-header h3 {
+  color: var(--secondary-blue);
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.level-badge {
+  padding: 0.35rem 0.75rem;
+  background: var(--muted-green);
+  color: var(--primary-cream);
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.level-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.level-stat {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  background: var(--primary-cream);
+  border-radius: 6px;
+}
+
+.level-stat label {
+  font-size: 0.8rem;
+  color: var(--sage-gray);
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 500;
+}
+
+.level-stat-value {
+  font-size: 1.1rem;
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.level-progress {
+  margin-top: 0.5rem;
+}
+
+.progress-label {
+  font-size: 0.85rem;
+  color: var(--muted-green);
+  font-weight: 600;
+  text-align: center;
+  margin: 0.5rem 0 0 0;
+}
+
+/* Theme Switcher Styles */
+.theme-switcher-card {
+  background: white;
+  border: 2px solid var(--muted-green);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 0 1.25rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(95, 89, 51, 0.08);
+}
+
+.theme-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--sage-gray);
+}
+
+.theme-header h3 {
+  color: var(--secondary-blue);
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.unlock-badge {
+  padding: 0.35rem 0.65rem;
+  background: #FFD700;
+  color: #333;
+  border-radius: 12px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.theme-description {
+  font-size: 0.9rem;
+  color: var(--sage-gray);
+  margin: 0 0 1rem 0;
+  font-style: italic;
+}
+
+.theme-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.theme-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--primary-cream);
+  border: 2px solid var(--sage-gray);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--primary-dark);
+}
+
+.theme-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(95, 89, 51, 0.15);
+}
+
+.theme-btn.active {
+  border-color: var(--muted-green);
+  background: white;
+  box-shadow: 0 0 0 2px var(--muted-green);
+}
+
+.theme-preview {
+  width: 60px;
+  height: 40px;
+  border-radius: 6px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+}
+
+.original-preview {
+  background: linear-gradient(90deg, 
+    #5f5933 0%, 
+    #f9e6bf 25%, 
+    #3c505c 50%, 
+    #9caca7 75%, 
+    #6c844c 100%
+  );
+}
+
+.forest-preview {
+  background: linear-gradient(90deg, 
+    #212914 0%, 
+    #d9bf77 25%, 
+    #3d060f 50%, 
+    #3d422e 75%, 
+    #5c6f42 100%
+  );
+}
+.midnight-preview {
+  background: linear-gradient(90deg, 
+    #070c05 0%, 
+    #c7d1e2 25%, 
+    #067971 50%, 
+    #4f612a 75%, 
+    #c4ac6c 100%
+  );
+}
+
+.sage-preview {
+  background: linear-gradient(90deg, 
+    #122710 0%, 
+    #bccd93 25%, 
+    #749950 50%, 
+    #040c04 75%, 
+    #141310 100%
+  );
+}
+
+.slate-preview {
+  background: linear-gradient(90deg, 
+    #2f4f4f 0%, 
+    #e5e4e2 25%, 
+    #708090 50%, 
+    #778899 75%, 
+    #b0c4de 100%
+  );
+}
 .no-achievements {
   text-align: center;
   color: var(--sage-gray);
