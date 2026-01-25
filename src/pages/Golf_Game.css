@@ -1,0 +1,209 @@
+/* Achievements Page Styles */
+.achievements-container {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--primary-cream);
+  padding-bottom: 2rem;
+  overflow-x: hidden;
+}
+
+.achievements-container h1 {
+  background: var(--secondary-blue);
+  color: var(--primary-cream);
+  padding: 1.5rem 1.25rem;
+  margin: 0 0 1.5rem 0;
+  font-size: 1.75rem;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0.05em;
+  border-bottom: 3px solid var(--muted-green);
+}
+
+.back-btn {
+  padding: 0.75rem 1rem;
+  background: var(--sage-gray);
+  color: var(--primary-cream);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.back-btn:hover {
+  background: var(--secondary-blue);
+  transform: translateY(-2px);
+}
+
+.achievements-summary {
+  background: white;
+  padding: 1rem 1.25rem;
+  margin: 0 1.25rem 1.5rem;
+  border: 2px solid var(--sage-gray);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(95, 89, 51, 0.08);
+  text-align: center;
+}
+
+.achievements-summary p {
+  margin: 0;
+  color: var(--muted-green);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.no-achievements {
+  text-align: center;
+  color: var(--sage-gray);
+  margin: 3rem 1.25rem;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+.error-message {
+  background: #fef5e7;
+  color: #8b4513;
+  padding: 1rem;
+  border-radius: 4px;
+  margin: 0 1.25rem 1rem;
+  text-align: center;
+  border: 1px solid var(--sage-gray);
+}
+
+.achievements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0 1.25rem;
+}
+
+.section-divider {
+  margin: 2rem 1.25rem 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--muted-green);
+}
+
+.section-divider h2 {
+  color: var(--secondary-blue);
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.achievement-card {
+  background: white;
+  border: 2px solid var(--sage-gray);
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(95, 89, 51, 0.08);
+  transition: all 0.3s ease;
+}
+
+.achievement-card:hover {
+  box-shadow: 0 4px 12px rgba(95, 89, 51, 0.15);
+  transform: translateY(-2px);
+}
+
+.achievement-card.unlocked {
+  border-color: var(--muted-green);
+}
+
+.achievement-card.locked {
+  opacity: 0.7;
+}
+
+.achievement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--sage-gray);
+}
+
+.achievement-header h3 {
+  color: var(--secondary-blue);
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.achievement-card.locked h3 {
+  color: var(--sage-gray);
+}
+
+.achievement-medal {
+  padding: 0.35rem 0.65rem;
+  border-radius: 12px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.achievement-card.locked .achievement-medal {
+  opacity: 0.5;
+}
+
+.achievement-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.achievement-stat {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  background: var(--primary-cream);
+  border-radius: 6px;
+}
+
+.achievement-stat label {
+  font-size: 0.8rem;
+  color: var(--sage-gray);
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 500;
+}
+
+.achievement-stat-value {
+  font-size: 1.1rem;
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.achievement-card.locked .achievement-stat-value {
+  color: var(--sage-gray);
+}
+
+.achievement-progress {
+  margin-top: 0.5rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--sage-gray);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--muted-green);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}

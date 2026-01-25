@@ -4,6 +4,7 @@ import { useState, useEffect, type ReactNode } from "react";
 import { golfService, type YTDStats } from "./services/golfService";
 import Log_Round from "./pages/Log_Round";
 import Previous_Round from "./pages/Previous_Round";
+import Golf_Game from "./pages/Golf_Game";
 import Login from "./pages/Login";
 
 // Protected Route Component
@@ -83,6 +84,11 @@ function Home() {
         className="previous_round_btn" onClick={() => navigate("/previous-round")}>
         Previous Round
       </button>
+
+      <button
+        className="achievements_btn" onClick={() => navigate("/achievements")}>
+        Achievements
+      </button>
     </>
   );
 }
@@ -112,6 +118,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Previous_Round />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/achievements" 
+        element={
+          <ProtectedRoute>
+            <Golf_Game />
           </ProtectedRoute>
         } 
       />
