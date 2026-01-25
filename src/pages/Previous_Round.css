@@ -157,3 +157,26 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.back-home-btn {
+  width: calc(100% - 2.5rem);
+  margin: 2rem 1.25rem 1.5rem;
+  padding: 1rem;
+  background: var(--sage-gray);
+  color: var(--primary-cream);
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  display: block;
+}
+
+.back-home-btn:hover {
+  background: var(--secondary-blue);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(60, 80, 92, 0.2);
+}

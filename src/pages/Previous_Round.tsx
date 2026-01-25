@@ -70,16 +70,15 @@ function Previous_Round() {
   if (isLoading) {
     return (
       <div className="previous-round-container">
-        <button className="back-btn" onClick={() => navigate(-1)}>Back</button>
         <h1>Previous Rounds</h1>
         <p>Loading rounds...</p>
+        <button className="back-home-btn" onClick={() => navigate('/')}>Back to Home</button>
       </div>
     );
   }
 
   return (
     <div className="previous-round-container">
-      <button className="back-btn" onClick={() => navigate(-1)}>Back</button>
       <h1>Previous Rounds</h1>
       
       {error && <div className="error-message">{error}</div>}
@@ -132,6 +131,8 @@ function Previous_Round() {
           ))}
         </div>
       )}
+      
+      <button className="back-home-btn" onClick={() => navigate('/')}>Back to Home</button>
     </div>
   );
 }

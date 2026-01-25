@@ -1,10 +1,11 @@
 import "./App.css";
-import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate, useLocation } from "react-router-dom";
 import { useState, useEffect, type ReactNode } from "react";
 import { golfService, type YTDStats } from "./services/golfService";
 import Log_Round from "./pages/Log_Round";
 import Previous_Round from "./pages/Previous_Round";
 import Login from "./pages/Login";
+import Header from "./components/Header";
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -45,18 +46,8 @@ function Home() {
     fetchStats();
   }, [navigate]);
 
-  const handleLogout = () => {
-    golfService.logout();
-    navigate('/login');
-  };
-
   return (
     <>
-      <div className="header">
-        <h1 className="title_page">Golf Metrics</h1>
-        <button className="logout-btn" onClick={handleLogout}>Logout</button>
-      </div>
-
       <div className="YTD">
         <h3>Year to Date:</h3>
         {isLoading ? (
@@ -88,34 +79,42 @@ function Home() {
 }
 
 function App() {
+  const location = useLocation();
+  const showHeader = location.pathname !== "/login";
+
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route 
-        path="/" 
-        element={
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/log-round" 
-        element={
-          <ProtectedRoute>
-            <Log_Round />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/previous-round" 
-        element={
-          <ProtectedRoute>
-            <Previous_Round />
-          </ProtectedRoute>
-        } 
-      />
-    </Routes>
+    <>
+      {showHeader && <Header />}
+      <div className={showHeader ? "app-content" : ""}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/log-round"
+            element={
+              <ProtectedRoute>
+                <Log_Round />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/previous-round"
+            element={
+              <ProtectedRoute>
+                <Previous_Round />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </div>
+    </>
   );
 }
 

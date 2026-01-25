@@ -130,7 +130,6 @@ function Log_Round() {
   if (step === 'setup') {
     return (
       <div className="log-round-container">
-        <button className="back-btn" onClick={() => navigate(-1)}>Back</button>
         <h1>Log Round</h1>
         
         <form onSubmit={handleStartRound} className="setup-form">
@@ -170,6 +169,8 @@ function Log_Round() {
             Start Round
           </button>
         </form>
+        
+        <button className="back-home-btn" onClick={() => navigate('/')}>Back to Home</button>
       </div>
     );
   }
@@ -188,7 +189,6 @@ function Log_Round() {
             <div className="firework" style={{ left: '65%', animationDelay: '1.2s' }}></div>
           </div>
         )}
-        <button className="back-btn" onClick={() => navigate(-1)}>Back</button>
         <h1>{courseName}</h1>
         <h2>Hole {currentHole} of {totalHoles}</h2>
         
@@ -390,6 +390,8 @@ function Log_Round() {
             {isSubmitting ? 'Submitting...' : 'Submit Round'}
           </button>
         </div>
+        
+        <button className="back-home-btn" onClick={() => navigate('/')}>Back to Home</button>
       </div>
     );
   }
