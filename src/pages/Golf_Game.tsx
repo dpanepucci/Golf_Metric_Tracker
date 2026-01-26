@@ -135,12 +135,19 @@ function Golf_Game() {
     { id: "score-2", title: "Breaking 90", description: "Score under 90", threshold: 90, medal: "Silver", icon: "⭐" },
     { id: "score-3", title: "Breaking 80", description: "Score under 80", threshold: 80, medal: "Gold", icon: "⭐" },
     { id: "score-4", title: "Scratch Golfer", description: "Score par or better (72)", threshold: 72, medal: "Platinum", icon: "⭐" },
+
+    // Offseason Rounds (Nov-Mar)
+    { id: "offseason-1", title: "Frosty Fairways", description: "Play 3-4 rounds in the offseason", threshold: 3, medal: "Bronze", icon: "❄️" },
+    { id: "offseason-2", title: "Cold-Weather Grinder", description: "Play 5-6 rounds in the offseason", threshold: 5, medal: "Silver", icon: "❄️" },
+    { id: "offseason-3", title: "Winter Warrior", description: "Play 7-8 rounds in the offseason", threshold: 7, medal: "Gold", icon: "❄️" },
+    { id: "offseason-4", title: "Snowbird Ace", description: "Play 9+ rounds in the offseason", threshold: 9, medal: "Platinum", icon: "❄️" },
     
     // Special Achievements
     { id: "double-trouble", title: "Double Trouble", description: "Hit all fairways and greens in one round", threshold: 1, medal: "Diamond", icon: "💎", isSpecial: true },
     { id: "consistent-10", title: "Mr. Consistent", description: "Play 10 rounds within 5 strokes of each other", threshold: 10, medal: "Silver", icon: "📊", isSpecial: true },
     { id: "marathon-man", title: "Marathon Man", description: "Log 10 rounds in a single month", threshold: 10, medal: "Silver", icon: "🏃", isSpecial: true },
     { id: "get-a-job", title: "Get a Job!", description: "Log 3 consecutive 18-hole rounds in a single week", threshold: 3, medal: "Bronze", icon: "💼", isSpecial: true },
+    { id: "max-level-8", title: "Level 8 Legend", description: "Reach Player Level 8", threshold: 8, medal: "Diamond", icon: "👑", isSpecial: true },
   ];
 
   // Check if achievement is unlocked
@@ -177,6 +184,14 @@ function Golf_Game() {
         if (fullRounds.length === 0) return false;
         const bestScore = Math.min(...fullRounds.map(r => r.score));
         return bestScore <= achievement.threshold;
+
+      case achievement.id.startsWith("offseason-"):
+        // Offseason months: Nov, Dec, Jan, Feb, Mar
+        const offseasonRounds = rounds.filter(round => {
+          const month = new Date(round.date).getMonth();
+          return [10, 11, 0, 1, 2].includes(month);
+        }).length;
+        return offseasonRounds >= achievement.threshold;
       
       case achievement.id === "double-trouble":
         // Check if any 18-hole round has perfect fairways AND perfect greens
@@ -291,7 +306,29 @@ function Golf_Game() {
           target: achievement.threshold,
           text: `Best: ${bestScore === 999 ? '--' : bestScore} / Target: ${achievement.threshold}`
         };
+
+      case achievement.id.startsWith("offseason-"):
+        const offseasonCount = rounds.filter(round => {
+          const month = new Date(round.date).getMonth();
+          return [10, 11, 0, 1, 2].includes(month);
+        }).length;
+        return {
+          current: offseasonCount,
+          target: achievement.threshold,
+          text: `${offseasonCount}/${achievement.threshold} offseason rounds`
+        };
       
+      case achievement.id === "max-level-8":
+        const unlockedCount = achievements
+          .filter(a => a.id !== "max-level-8")
+          .filter(isAchievementUnlocked).length;
+        const currentLevel = getLevelInfo(unlockedCount).level;
+        return {
+          current: currentLevel,
+          target: 8,
+          text: currentLevel >= 8 ? "Level 8 achieved!" : `Level ${currentLevel} / 8`
+        };
+
       case achievement.id === "double-trouble":
         const perfectRounds = rounds.filter(round => 
           round.total_greens === 18 &&
@@ -415,14 +452,24 @@ function Golf_Game() {
   // Separate regular and special achievements
   const regularAchievements = achievements.filter(a => !a.isSpecial);
   const specialAchievements = achievements.filter(a => a.isSpecial);
+  const maxLevelAchievement = specialAchievements.find(a => a.id === "max-level-8");
+  const baseSpecialAchievements = specialAchievements.filter(a => a.id !== "max-level-8");
   
   const unlockedAchievements = regularAchievements.filter(isAchievementUnlocked);
-  const lockedAchievements = regularAchievements.filter(a => !isAchievementUnlocked(a));
   
-  const unlockedSpecialAchievements = specialAchievements.filter(isAchievementUnlocked);
-  const lockedSpecialAchievements = specialAchievements.filter(a => !isAchievementUnlocked(a));
+  const unlockedSpecialAchievements = baseSpecialAchievements.filter(isAchievementUnlocked);
+  const lockedSpecialAchievements = baseSpecialAchievements.filter(a => !isAchievementUnlocked(a));
   
-  const levelInfo = getLevelInfo(unlockedAchievements.length + unlockedSpecialAchievements.length);
+  const baseUnlockedCount = unlockedAchievements.length + unlockedSpecialAchievements.length;
+  const levelInfo = getLevelInfo(baseUnlockedCount);
+  const isMaxLevelAchievementUnlocked = Boolean(maxLevelAchievement && levelInfo.isMaxLevel);
+  const unlockedSpecialDisplay = isMaxLevelAchievementUnlocked && maxLevelAchievement
+    ? [...unlockedSpecialAchievements, maxLevelAchievement]
+    : unlockedSpecialAchievements;
+  const lockedSpecialDisplay = !isMaxLevelAchievementUnlocked && maxLevelAchievement
+    ? [...lockedSpecialAchievements, maxLevelAchievement]
+    : lockedSpecialAchievements;
+  const totalUnlockedCount = baseUnlockedCount + (isMaxLevelAchievementUnlocked ? 1 : 0);
 
   // Calculate achievement counts by medal type
   const getAchievementCounts = () => {
@@ -439,7 +486,7 @@ function Golf_Game() {
     const platinumUnlocked = unlockedAchievements.filter(a => a.medal === "Platinum").length;
     
     const specialTotal = specialAchievements.length;
-    const specialUnlocked = unlockedSpecialAchievements.length;
+    const specialUnlocked = unlockedSpecialDisplay.length;
     
     return [
       { type: "Bronze", unlocked: bronzeUnlocked, total: bronzeTotal },
@@ -458,7 +505,8 @@ function Golf_Game() {
     { key: "fir", title: "Fairways in Regulation", description: "Hit fairways consistently in a round." },
     { key: "gir", title: "Greens in Regulation", description: "Reach greens in regulation." },
     { key: "putts", title: "Putting", description: "Fewer putts in a round." },
-    { key: "score", title: "Scoring", description: "Lower your total score." }
+    { key: "score", title: "Scoring", description: "Lower your total score." },
+    { key: "offseason", title: "Offseason Rounds", description: "Keep playing through the winter months." }
   ];
 
   const groupedRegularAchievements = achievementGroups
@@ -500,7 +548,7 @@ function Golf_Game() {
       {error && <div className="error-message">{error}</div>}
 
       <div className="achievements-summary">
-        <p>{unlockedAchievements.length + unlockedSpecialAchievements.length} of {achievements.length} Unlocked</p>
+        <p>{totalUnlockedCount} of {achievements.length} Unlocked</p>
       </div>
 
       {/* Level Display */}
@@ -539,12 +587,12 @@ function Golf_Game() {
               <div 
                 className="progress-fill" 
                 style={{ 
-                  width: `${((unlockedAchievements.length + unlockedSpecialAchievements.length) / levelInfo.nextLevelAt) * 100}%` 
+                  width: `${(baseUnlockedCount / levelInfo.nextLevelAt) * 100}%` 
                 }}
               />
             </div>
             <p className="progress-label">
-              {levelInfo.nextLevelAt - (unlockedAchievements.length + unlockedSpecialAchievements.length)} more to Level {levelInfo.level + 1}
+              {levelInfo.nextLevelAt - baseUnlockedCount} more to Level {levelInfo.level + 1}
             </p>
           </div>
         )}
@@ -698,13 +746,13 @@ function Golf_Game() {
           )}
 
           {/* Unlocked Special Achievements */}
-          {unlockedSpecialAchievements.length > 0 && (
+          {unlockedSpecialDisplay.length > 0 && (
             <>
               <div className="section-divider special-section">
                 <h2>🌟 Special Achievements Unlocked</h2>
               </div>
               <div className="achievements-list">
-                {unlockedSpecialAchievements.map(achievement => {
+                {unlockedSpecialDisplay.map(achievement => {
                   const progress = getProgress(achievement);
                   return (
                     <div key={achievement.id} className="achievement-card unlocked special">
@@ -737,14 +785,14 @@ function Golf_Game() {
           )}
 
           {/* Locked Special Achievements */}
-          {lockedSpecialAchievements.length > 0 && (
+          {lockedSpecialDisplay.length > 0 && (
             <>
               <div className="section-divider special-section">
                 <h2>🌟 Special Achievements Locked</h2>
                 <p className="special-hint">Rare accomplishments that test your skills</p>
               </div>
               <div className="achievements-list">
-                {lockedSpecialAchievements.map(achievement => {
+                {lockedSpecialDisplay.map(achievement => {
                   const progress = getProgress(achievement);
                   const progressPercentage = Math.min(
                     (progress.current / progress.target) * 100,

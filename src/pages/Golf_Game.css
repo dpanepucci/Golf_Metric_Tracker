@@ -612,6 +612,8 @@
 
 .achievement-progress {
   margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
 }
 
 .progress-bar {
@@ -620,6 +622,7 @@
   background: var(--sage-gray);
   border-radius: 10px;
   overflow: hidden;
+  margin: 0 auto;
 }
 
 .progress-fill {
