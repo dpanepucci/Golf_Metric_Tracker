@@ -452,6 +452,24 @@ function Golf_Game() {
 
   const achievementCounts = getAchievementCounts();
 
+  const medalOrder: Achievement["medal"][] = ["Bronze", "Silver", "Gold", "Platinum"];
+  const achievementGroups = [
+    { key: "rounds", title: "Rounds Played", description: "Log more rounds to climb the ranks." },
+    { key: "fir", title: "Fairways in Regulation", description: "Hit fairways consistently in a round." },
+    { key: "gir", title: "Greens in Regulation", description: "Reach greens in regulation." },
+    { key: "putts", title: "Putting", description: "Fewer putts in a round." },
+    { key: "score", title: "Scoring", description: "Lower your total score." }
+  ];
+
+  const groupedRegularAchievements = achievementGroups
+    .map(group => {
+      const items = regularAchievements
+        .filter(achievement => achievement.id.startsWith(`${group.key}-`))
+        .sort((a, b) => medalOrder.indexOf(a.medal) - medalOrder.indexOf(b.medal));
+      return { ...group, items };
+    })
+    .filter(group => group.items.length > 0);
+
   // Check if current theme is still unlocked, if not reset to original
   // Only run this check after data has loaded to avoid resetting during initial render
   useEffect(() => {
@@ -590,92 +608,89 @@ function Golf_Game() {
         <p className="no-achievements">Start logging rounds to unlock achievements!</p>
       ) : (
         <>
-          {/* Unlocked Achievements */}
-          {unlockedAchievements.length > 0 && (
+          {/* Grouped Achievements */}
+          {groupedRegularAchievements.length > 0 && (
             <>
               <div className="section-divider">
-                <h2>Unlocked</h2>
+                <h2>Achievement Categories</h2>
               </div>
-              <div className="achievements-list">
-                {unlockedAchievements.map(achievement => {
-                  const progress = getProgress(achievement);
-                  return (
-                    <div key={achievement.id} className="achievement-card unlocked">
-                      <div className="achievement-header">
-                        <h3>{achievement.title}</h3>
-                        <div 
-                          className="achievement-medal" 
-                          style={{ backgroundColor: getMedalColor(achievement.medal) }}
-                        >
-                          {achievement.medal}
-                        </div>
-                      </div>
-                      
-                      <div className="achievement-details">
-                        <div className="achievement-stat">
-                          <label>Description:</label>
-                          <span className="achievement-stat-value">{achievement.description}</span>
-                        </div>
-                        
-                        <div className="achievement-stat">
-                          <label>Progress:</label>
-                          <span className="achievement-stat-value">{progress.text}</span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </>
-          )}
+              <div className="achievement-groups">
+                {groupedRegularAchievements.map(group => {
+                  const unlockedCount = group.items.filter(isAchievementUnlocked).length;
+                  const groupIcon = group.items[0]?.icon ?? "🏌️";
 
-          {/* Locked Achievements */}
-          {lockedAchievements.length > 0 && (
-            <>
-              <div className="section-divider">
-                <h2>Locked</h2>
-              </div>
-              <div className="achievements-list">
-                {lockedAchievements.map(achievement => {
-                  const progress = getProgress(achievement);
-                  const progressPercentage = Math.min(
-                    (progress.current / progress.target) * 100,
-                    100
-                  );
-                  
                   return (
-                    <div key={achievement.id} className="achievement-card locked">
-                      <div className="achievement-header">
-                        <h3>{achievement.title}</h3>
-                        <div 
-                          className="achievement-medal" 
-                          style={{ backgroundColor: getMedalColor(achievement.medal) }}
-                        >
-                          {achievement.medal}
+                    <details key={group.key} className="achievement-group">
+                      <summary className="achievement-group-summary">
+                        <div className="achievement-group-title">
+                          <span className="achievement-group-icon">{groupIcon}</span>
+                          <div className="achievement-group-text">
+                            <h2>{group.title}</h2>
+                            <p>{group.description}</p>
+                          </div>
                         </div>
+                        <div className="achievement-group-status">
+                          <span className="group-unlocked-count">{unlockedCount}/{group.items.length} unlocked</span>
+                          <span className="group-toggle">View</span>
+                        </div>
+                      </summary>
+
+                      <div className="achievement-group-list">
+                        {group.items.map(achievement => {
+                          const progress = getProgress(achievement);
+                          const isUnlocked = isAchievementUnlocked(achievement);
+                          const progressPercentage = Math.min(
+                            (progress.current / progress.target) * 100,
+                            100
+                          );
+
+                          return (
+                            <div
+                              key={achievement.id}
+                              className={`achievement-tier ${isUnlocked ? "unlocked" : "locked"}`}
+                            >
+                              <div className="achievement-tier-header">
+                                <div className="achievement-tier-title">
+                                  <span
+                                    className="achievement-tier-medal"
+                                    style={{ backgroundColor: getMedalColor(achievement.medal) }}
+                                  >
+                                    {achievement.medal}
+                                  </span>
+                                  <h3>{achievement.title}</h3>
+                                </div>
+                                <span className={`achievement-tier-status ${isUnlocked ? "unlocked" : "locked"}`}>
+                                  {isUnlocked ? "Unlocked" : "Locked"}
+                                </span>
+                              </div>
+
+                              <div className="achievement-details">
+                                <div className="achievement-stat">
+                                  <label>Requirement:</label>
+                                  <span className="achievement-stat-value">{achievement.description}</span>
+                                </div>
+
+                                <div className="achievement-stat">
+                                  <label>Progress:</label>
+                                  <span className="achievement-stat-value">{progress.text}</span>
+                                </div>
+                              </div>
+
+                              {!isUnlocked && (
+                                <div className="achievement-progress">
+                                  <div className="progress-bar">
+                                    <div
+                                      className="progress-fill"
+                                      style={{ width: `${progressPercentage}%` }}
+                                    />
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
-                      
-                      <div className="achievement-details">
-                        <div className="achievement-stat">
-                          <label>Description:</label>
-                          <span className="achievement-stat-value">{achievement.description}</span>
-                        </div>
-                        
-                        <div className="achievement-stat">
-                          <label>Progress:</label>
-                          <span className="achievement-stat-value">{progress.text}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="achievement-progress">
-                        <div className="progress-bar">
-                          <div 
-                            className="progress-fill" 
-                            style={{ width: `${progressPercentage}%` }}
-                          />
-                        </div>
-                      </div>
-                    </div>
+                    </details>
                   );
                 })}
               </div>
