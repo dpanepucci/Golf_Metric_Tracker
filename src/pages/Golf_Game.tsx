@@ -125,10 +125,10 @@ function Golf_Game() {
     { id: "gir-4", title: "Green Machine", description: "Hit 70%+ GIR in a round", threshold: 70, medal: "Platinum", icon: "🎪" },
     
     // Putting
-    { id: "putts-1", title: "Putter Pro", description: "34 putts or less in a round", threshold: 34, medal: "Bronze", icon: "⛳" },
-    { id: "putts-2", title: "Smooth Roller", description: "32 putts or less in a round", threshold: 32, medal: "Silver", icon: "⛳" },
-    { id: "putts-3", title: "Putting Wizard", description: "30 putts or less in a round", threshold: 30, medal: "Gold", icon: "⛳" },
-    { id: "putts-4", title: "Putting Master", description: "28 putts or less in a round", threshold: 28, medal: "Platinum", icon: "⛳" },
+    { id: "putts-1", title: "Putter Pro", description: "40 putts or less in a round", threshold: 40, medal: "Bronze", icon: "⛳" },
+    { id: "putts-2", title: "Smooth Roller", description: "38 putts or less in a round", threshold: 38, medal: "Silver", icon: "⛳" },
+    { id: "putts-3", title: "Putting Wizard", description: "36 putts or less in a round", threshold: 36, medal: "Gold", icon: "⛳" },
+    { id: "putts-4", title: "Putting Master", description: "34 putts or less in a round", threshold: 34, medal: "Platinum", icon: "⛳" },
     
     // Scoring
     { id: "score-1", title: "Breaking 100", description: "Score under 100", threshold: 100, medal: "Bronze", icon: "⭐" },
