@@ -1,73 +1,34 @@
-# React + TypeScript + Vite
+# Golf Metrics Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## What the application does
+Golf Metrics Tracker is a full‑stack web app for logging golf rounds and turning them into easy‑to‑read performance insights. It captures hole‑by‑hole data, calculates core stats (FIR, GIR, putts, scoring), and adds a gamified achievements system with player levels and unlockable themes.
 
-Currently, two official plugins are available:
+## Features
+- Secure user accounts with JWT‑based authentication.
+- Guided round logging (9 or 18 holes) with hole‑by‑hole entry and a review step before saving.
+- Automatic round totals: score, fairways hit, greens in regulation, and total putts.
+- Year‑to‑date stats dashboard (FIR%, GIR%, average putts, rounds played).
+- Previous rounds list with search by course name or score.
+- Achievements system with medals, progress tracking, and special challenges.
+- Player level system based on achievements unlocked.
+- Theme unlocks tied to player level with saved preferences.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Ease of use
+- Simple onboarding: register, log in, and start tracking in minutes.
+- Step‑by‑step round entry with back/next controls and progress feedback.
+- Clear summaries before submission and straightforward navigation across pages.
+- Stats and achievements update automatically after each round.
 
-## React Compiler
+## Tech stack
+### Frontend
+- React with TypeScript
+- Vite for development and builds
+- React Router for navigation
+- Local storage for session token and theme preference
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Backend
+- FastAPI for the REST API
+- Supabase DB
+- JWT authentication with password hashing
+- Pydantic for request/response schemas
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
