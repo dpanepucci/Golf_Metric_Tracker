@@ -33,6 +33,7 @@ function Log_Round() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [showFireworks, setShowFireworks] = useState(false);
+  const [editingHoleIndex, setEditingHoleIndex] = useState<number | null>(null);
 
   // Start tracking holes
   const handleStartRound = (e: React.FormEvent) => {
@@ -78,6 +79,31 @@ function Log_Round() {
       setCurrentHole(currentHole - 1);
       setCurrentHoleData(previousHoleData);
     }
+  };
+
+  // Edit a specific hole from review
+  const handleEditHole = (holeIndex: number) => {
+    setEditingHoleIndex(holeIndex);
+    setCurrentHoleData(holesData[holeIndex]);
+    setCurrentHole(holeIndex + 1);
+    setStep('holes');
+  };
+
+  // Save edited hole and return to review
+  const handleSaveEditedHole = () => {
+    if (editingHoleIndex !== null) {
+      const updatedHoles = [...holesData];
+      updatedHoles[editingHoleIndex] = currentHoleData;
+      setHolesData(updatedHoles);
+      setEditingHoleIndex(null);
+      setStep('review');
+    }
+  };
+
+  // Cancel editing and return to review
+  const handleCancelEdit = () => {
+    setEditingHoleIndex(null);
+    setStep('review');
   };
 
   // Calculate totals
@@ -197,14 +223,16 @@ function Log_Round() {
           </div>
         )}
         <h1>{courseName}</h1>
-        <h2>Hole {currentHole} of {totalHoles}</h2>
+        <h2>{editingHoleIndex !== null ? `Editing Hole ${currentHole}` : `Hole ${currentHole} of ${totalHoles}`}</h2>
         
-        <div className="progress-bar">
-          <div 
-            className="progress-fill" 
-            style={{ width: `${(holesData.length / totalHoles) * 100}%` }}
-          />
-        </div>
+        {editingHoleIndex === null && (
+          <div className="progress-bar">
+            <div 
+              className="progress-fill" 
+              style={{ width: `${(holesData.length / totalHoles) * 100}%` }}
+            />
+          </div>
+        )}
 
         <div className="hole-entry-form">
           <div className="form-group">
@@ -313,22 +341,43 @@ function Log_Round() {
           </div>
 
           <div className="navigation-buttons">
-            {currentHole > 1 && (
-              <button 
-                type="button" 
-                className="prev-btn"
-                onClick={handlePreviousHole}
-              >
-                Previous Hole
-              </button>
+            {editingHoleIndex !== null ? (
+              <>
+                <button 
+                  type="button" 
+                  className="prev-btn"
+                  onClick={handleCancelEdit}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="button" 
+                  className="next-btn"
+                  onClick={handleSaveEditedHole}
+                >
+                  Save Changes
+                </button>
+              </>
+            ) : (
+              <>
+                {currentHole > 1 && (
+                  <button 
+                    type="button" 
+                    className="prev-btn"
+                    onClick={handlePreviousHole}
+                  >
+                    Previous Hole
+                  </button>
+                )}
+                <button 
+                  type="button" 
+                  className="next-btn"
+                  onClick={handleNextHole}
+                >
+                  {currentHole === totalHoles ? 'Review Round' : 'Next Hole'}
+                </button>
+              </>
             )}
-            <button 
-              type="button" 
-              className="next-btn"
-              onClick={handleNextHole}
-            >
-              {currentHole === totalHoles ? 'Review Round' : 'Next Hole'}
-            </button>
           </div>
         </div>
       </div>
@@ -369,13 +418,18 @@ function Log_Round() {
           </div>
 
           <div className="holes-review">
-            <h4>Hole by Hole:</h4>
+            <h4>Hole by Hole: <span className="edit-hint">(tap to edit)</span></h4>
             <div className="holes-grid">
               {allHoles.map((hole, index) => (
-                <div key={index} className="hole-summary">
+                <div 
+                  key={index} 
+                  className="hole-summary clickable"
+                  onClick={() => handleEditHole(index)}
+                >
                   <strong>Hole {hole.hole}</strong>
                   <span>Score: {hole.score}</span>
                   <span>Putts: {hole.putts}</span>
+                  <span className="edit-icon">✏️</span>
                 </div>
               ))}
             </div>
@@ -383,12 +437,6 @@ function Log_Round() {
         </div>
 
         <div className="review-buttons">
-          <button 
-            className="back-btn"
-            onClick={() => setStep('holes')}
-          >
-            Edit Holes
-          </button>
           <button 
             className="submit-btn"
             onClick={handleSubmitRound}
