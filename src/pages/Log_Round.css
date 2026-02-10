@@ -301,6 +301,13 @@
   letter-spacing: 0.02em;
 }
 
+.holes-review h4 .edit-hint {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--sage-gray);
+  font-style: italic;
+}
+
 .holes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
@@ -315,6 +322,37 @@
   border-radius: 6px;
   border: 1px solid var(--sage-gray);
   font-size: 0.85rem;
+  position: relative;
+}
+
+.hole-summary.clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hole-summary.clickable:hover {
+  border-color: var(--muted-green);
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(95, 89, 51, 0.12);
+}
+
+.hole-summary.clickable:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(95, 89, 51, 0.1);
+}
+
+.hole-summary .edit-icon {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 0.7rem;
+  opacity: 0.4;
+  transition: opacity 0.2s ease;
+}
+
+.hole-summary.clickable:hover .edit-icon {
+  opacity: 1;
 }
 
 .hole-summary strong {
